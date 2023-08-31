@@ -1,0 +1,87 @@
+---
+- name: Unregister AZDO agents
+  hosts: azdo_hosts
+  roles:
+    - role: unregister-azdo-poolagent
+      azdo_pat_token: "{{ azdo_pat_token }}"
+
+- name: Unregister IICS secure agents
+  hosts: iics_hosts
+  roles:
+    - role: unregister-iics-dbx-agent
+      iics_username: "{{ iics_username }}"
+      iics_password: "{{ iics_password }}"
+
+- name: Unregister DBX secure agents
+  hosts: dbx_hosts
+  roles:
+    - role: unregister-iics-dbx-agent
+      iics_username: "{{ iics_username }}"
+      iics_password: "{{ iics_password }}"
+
+- name: Delete Azure Resources
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Get facts for one resource group including resources it contains
+    azure_rm_resourcegroup_info:
+      name: "{{ resource_group }}"
+      list_resources: yes
+    register: rg
+
+  - name: Remove VM and all autocreated resources
+    azure_rm_virtualmachine:
+      resource_group: "{{ resource_group }}"
+      name: "{{ item['name'] }}"
+      remove_on_absent: all_autocreated
+      state: absent
+    when:
+      - item['tags']['Role'] is undefined or item['tags']['Role'] != 'Ansible'
+      - item['type'] == 'Microsoft.Compute/virtualMachines'
+    loop: "{{ rg.resourcegroups[0].resources }}"
+    ignore_errors: true
+
+  - name: Delete all disk 
+    azure_rm_manageddisk:
+      resource_group: "{{ resource_group }}"
+      name: "{{ item['name'] }}"
+      location: "{{ item['location'] }}"
+      state: absent
+    when:
+      - item['tags']['Role'] is undefined or item['tags']['Role'] != 'Ansible'
+      - item['type'] == 'Microsoft.Compute/disks'
+    loop: "{{ rg.resourcegroups[0].resources }}"
+    ignore_errors: true
+
+  - name: Delete all network interface
+    azure_rm_networkinterface:
+      resource_group: "{{ resource_group }}"
+      name: "{{ item['name'] }}"
+      state: absent
+    when:
+      - item['tags']['Role'] is undefined or item['tags']['Role'] != 'Ansible'
+      - item['type'] == 'Microsoft.Network/networkInterfaces'
+    loop: "{{ rg.resourcegroups[0].resources }}"
+    ignore_errors: true
+
+  - name: Delete all availability set
+    azure_rm_availabilityset:
+      resource_group: "{{ resource_group }}"
+      name: "{{ item['name'] }}"
+      location: "{{ item['location'] }}"
+      state: absent
+    when:
+      - item['tags']['Role'] is undefined or item['tags']['Role'] != 'Ansible'
+      - item['type'] == 'Microsoft.Compute/availabilitySets'
+    loop: "{{ rg.resourcegroups[0].resources }}"
+    ignore_errors: true
+
+  # TODO: ansible does not recognized this module
+  # - name: Delete private endpoint
+  #   azure_rm_privateendpoint:
+  #     name: "{{ item['name'] }}"
+  #     resource_group: "{{ resource_group }}"
+  #     state: absent
+  #   when:
+  #     - item['type'] == 'Microsoft.Compute/privateEndpoints'
+  #   loop: "{{ rg.resourcegroups[0].resources }}"

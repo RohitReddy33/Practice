@@ -1,0 +1,29 @@
+---
+# - name: Mount and File Share Configuration
+#   hosts: all
+#   become: yes
+#   roles:
+#     # - role: lin-install-iics-agent
+#     # - role: lin-mount-azurefiles
+#     #   stg_account_name: "ansiblefilesharetest"
+#     #   stg_account_key: "dFcfEmt8/EsaWwW9F210utT+xwokeenVC2oeA0k1+E/0B+/7GuYHnBQoM7ROTIyfIA+sRS5K+Y30+AStznOA0w=="
+#     #   stg_fileshare_name: "mattwashere"
+#     #   mount_point: "/mnt/fileshare"
+#     - role: lin-mount-blobfuse
+#       iicsadmin: "iicsgsipocadmin"
+#       iicsgroup: "iicsgsipocadmin"
+
+# - name: Install Agent
+#   hosts: all
+#   become: yes
+#   roles:
+#     - role: lin-install-iics-agent
+  
+- name: Register Agent
+  hosts: all
+  become: yes
+  roles:
+    - role: lin-get-iics-agent-info
+      iics_username: "azdo_spn_qa"
+      iics_password: "In7aUs3r@2021"
+

@@ -1,0 +1,74 @@
+---
+- name: Run IICS-specific and Azure tasks on localhost
+  hosts: localhost
+  gather_facts: no
+  roles:
+    - role: azdo-test-agentpool
+      azdo_url: "{{ azdo_url }}"
+      azdo_pat_token: "{{ azdo_pat_token }}"
+      azdo_agent_pool: "{{ azdo_agent_pool }}"
+    - role: lin-iics-agentgroup
+      become: yes
+      iics_username: "{{ iics_username }}"
+      iics_password: "{{ iics_password }}"
+      iics_agent_group_name: "{{ iics_agent_group_name }}"
+  tasks:
+  - name: Get storage account details for fileshare
+    azure_rm_storageaccount_info:
+      tags:
+        - Usage:Fileshare
+      show_connection_string: true
+    register: result_storage
+
+- name: Windows-specific tasks
+  hosts: windows
+  roles:
+    - role: win-drives-config
+
+- name: Linux-specific tasks
+  hosts: linux
+  become: yes
+  roles:
+    - role: install-nessus
+
+- name: Non OS-specific general tasks
+  hosts: all
+  roles:
+    - role: install-trendmicro
+    - role: ad-join
+
+- name: Linux-specific IICS tasks
+  hosts: iics_hosts:dbx_hosts:!windows
+  roles:
+    - role: lin-drive-mount
+      become: yes
+      volumes: "{{ iics_volumes }}"
+
+- name: Configure IICS secure agents
+  hosts: iics_hosts:dbx_hosts
+  roles:
+    - role: mount-azurefiles
+      stg_account_name: "{{ hostvars.localhost.result_storage.storageaccounts[0].name }}"
+      stg_account_key: "{{ hostvars.localhost.result_storage.storageaccounts[0].primary_endpoints.key }}"
+      stg_fileshare_name: "iicsshare"
+      mount_point: "{{ mount_path }}"
+      win_mount_letter: "z"
+    - role: register-iics-agent
+      iics_username: "{{ iics_username }}"
+      iics_password: "{{ iics_password }}"
+      iics_agent_group_name: "{{ iics_agent_group_name }}"
+    - role: net-connectivity-test
+      tests: "{{ network_tests }}"
+
+- name: Configure AZDO agents
+  hosts: azdo_hosts
+  roles:
+    - role: azdo-poolagent
+      azdo_url: "{{ azdo_url }}"
+      azdo_pat_token: "{{ azdo_pat_token }}"
+      azdo_agent_pool: "{{ azdo_agent_pool }}"
+
+- name: Configure Databricks connectors
+  hosts: dbx_hosts:!windows
+  roles:
+    - role: lin-install-datadriver

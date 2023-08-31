@@ -1,0 +1,37 @@
+---
+- name: Start or stop IICS Azure VMS
+  hosts: localhost
+  connection: local
+  tasks:
+  - name: Get VM info by RG
+    azure_rm_virtualmachine_info:
+      resource_group: "{{ resource_group }}"
+    register: vms
+  # - debug:
+  #     msg: "{{ vms.vms }}"
+  - name: Temporarily power on VMs
+    azure_rm_virtualmachine:
+      resource_group: "{{ item['resource_group'] }}"
+      name: "{{ item['name'] }}"
+      tags:
+        uptime_orig: "{{ item | community.general.json_query('tags.uptime') }}"
+        uptime: "ignore"
+      started: true
+    when:
+      - vmAction == 'Start' 
+      - item['power_state'] != 'running'
+      - (item['tags']['Role'] == 'IICS') or (item['tags']['Role'] == 'Databricks')
+    loop: "{{  vms.vms }}"
+  - name: Deallocate VMs
+    azure_rm_virtualmachine:
+      resource_group: "{{ item['resource_group'] }}"
+      name: "{{ item['name'] }}"
+      tags:
+        uptime_orig: "N/A"
+        uptime: "{{ item | community.general.json_query('tags.uptime_orig') }}"
+      allocated: no
+    when:
+      - vmAction == 'Stop' 
+      - item['power_state'] == 'running'
+      - (item['tags']['Role'] == 'IICS') or (item['tags']['Role'] == 'Databricks')
+    loop: "{{  vms.vms }}"

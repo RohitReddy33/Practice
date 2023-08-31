@@ -1,0 +1,5 @@
+---
+- name: Install data bricks driver
+  hosts: all
+  roles:
+    - role: lin-install-datadriver

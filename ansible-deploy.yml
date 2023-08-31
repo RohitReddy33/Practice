@@ -1,0 +1,41 @@
+trigger:
+- none
+
+name: Deploy Ansible VM w Bicep and regiser to agent pool via Cloud Init
+
+parameters:
+- name: project
+  displayName: Name of the project for deployment
+  type: string
+  default: MRSI
+  values:
+  - AMIG
+  - MRSI
+
+- name: environment
+  displayName: The shortcut for the environment
+  type: string
+  default: DEV
+  values:
+  - DEV
+  - QA
+  - UAT
+  - PRD
+
+- name: region
+  displayName: The shortcut for the region (WE, EUS, etc.)
+  type: string
+  default: East US
+  values:
+  - West US
+  - East US
+
+stages:
+  - template: tasks/deploy-ansible-host.yml
+    parameters:
+      project: ${{ parameters.project }}
+      environment: ${{ parameters.environment }}
+      variableGroupName: 'ansible-dev'
+      agentPoolName: 'GSI-Ansible'
+      azureSubscriptionConnectionName: "ser-iics-${{ parameters.project }}-${{ parameters.environment }}"
+      location: ${{ parameters.region }}

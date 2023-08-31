@@ -1,0 +1,102 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vnetRG": {
+      "value": "eus-az-rg-ci018775495-qa1-01"
+    },
+    "vnetName": {
+      "value": "eus-az-vnet-ci018775495-qa1-01"
+    },
+    "adminUserName": {
+      "value": "#{ vm_username }#"
+    },
+    "adminPassword": {
+      "value": "#{ vm_password }#"
+    },
+    "prefix": {
+      "value": "mr"
+    },
+    "environment": {
+      "value": "poc"
+    },
+    "vms_uptime": {
+      "value": "EST 8-20 * * 1-5"
+    },
+    "sqlServer_deployYesNo": {
+      "value": false
+    },    
+    "keyVault_deployYesNo": {
+      "value": false
+    },
+    "fileShare_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetblobqa1"
+    },
+    "sqlServer_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetdbqa1"
+    },    
+    "keyVault_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetkvqa1"
+    },
+    "vm_iics_os": {
+      "value": "Linux"
+    },
+    "vm_iics_startNum": {
+      "value": 1
+    },
+    "vm_iics_count": {
+      "value": 1
+    },
+    "vm_iics_size": {
+      "value": "Standard_B2ms"
+    },
+    "vm_iics_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetagentqa1"
+    },
+    "vm_iics_dataDisksGB": {
+      "value": [512,512]
+    },
+    "vm_azdo_os": {
+      "value": "Linux"
+    },
+    "vm_azdo_startNum": {
+      "value": 1
+    },
+    "vm_azdo_count": {
+      "value": 1
+    },
+    "vm_azdo_size": {
+      "value": "Standard_B2ms"
+    },
+    "vm_azdo_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetagentqa1"
+    },
+    "vm_azdo_dataDisksGB": {
+      "value": []
+    },
+    "vm_dbx_os": {
+      "value": "Linux"
+    },
+    "vm_dbx_startNum": {
+      "value": 1
+    },
+    "vm_dbx_count": {
+      "value": 1
+    },
+    "vm_dbx_size": {
+      "value": "Standard_B2ms"
+    },
+    "vm_dbx_subnetName": {
+      "value": "eus-az-subnet-ci018775495-qa1-01-snetagentqa1"
+    },
+    "vm_dbx_dataDisksGB": {
+      "value": [512,512]
+    },
+    "sqlServer_aadAdmin_group": {
+      "value": "AAD-GRP-MRSI-DevOps-Admin"
+    }, 
+    "sqlServer_aadAdmin_oid": {
+      "value": "610db249-db0a-4534-84be-14a9dff97b84"
+    }
+  }
+}

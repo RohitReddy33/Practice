@@ -1,0 +1,23 @@
+#cloud-config
+
+users:
+  - default
+  - name: ansible
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: wheel,adm,systemd-journal
+  - name: vstsagent
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: wheel,adm,systemd-journal
+
+packages:
+  - git
+  - python3-pip
+  - sshpass
+
+runcmd:
+  - rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  - dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
+  - dnf install azure-cli -y
+  - python3 -m pip install ansible
+  - su -c 'mkdir azagent;cd azagent;curl -fkSL -o vstsagent.tar.gz https://vstsagentpackage.azureedge.net/agent/3.220.0/vsts-agent-linux-x64-3.220.0.tar.gz;tar -zxvf vstsagent.tar.gz; if [ -x "$(command -v systemctl)" ]; then ./config.sh --deploymentgroup --deploymentgroupname "#{deploymentGroupName}#" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/munichre-na --work _work --projectname "GSI_Main" --auth PAT --token "#{dgRegisterToken}#" --runasservice; sudo ./svc.sh install; sudo ./svc.sh start; else ./config.sh --deploymentgroup --deploymentgroupname "#{deploymentGroupName}#" --acceptteeeula --agent $HOSTNAME --url https://dev.azure.com/munichre-na --work _work --projectname "GSI_Main" --auth PAT --token "#{dgRegisterToken}#"; ./run.sh; fi' - vstsagent
+

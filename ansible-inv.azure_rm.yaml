@@ -1,0 +1,16 @@
+#https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html
+plugin: azure.azcollection.azure_rm
+auth_source: cli
+include_vm_resource_groups:
+  - RG-MRSI-IICS-TEMP 
+conditional_groups:
+  all: true
+  dbx_hosts: "'Databricks' in tags.Role"
+  iics_hosts: "'IICS' in tags.Role"
+  azdo_hosts: "'AZDO' in tags.Role"
+  linux: "'linux' in os_profile.system"
+  windows: "'windows' in os_profile.system"
+hostvar_expressions:
+  ansible_ssh_common_args: "'-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'"
+  ansible_become_method: "'runas' if 'windows' in os_profile.system else 'sudo'"
+  ansible_shell_type: "'cmd' if 'windows' in os_profile.system else 'sh'"

@@ -1,0 +1,39 @@
+#cloud-config
+
+#system_info:
+#  default_user:
+#    name: vstsagent
+#    sudo: ALL=(ALL) NOPASSWD:ALL
+
+users:
+  - default
+  - name: ansible
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: wheel,adm,systemd-journal
+  - name: vstsagent
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    groups: wheel,adm,systemd-journal
+
+packages:
+  - git
+  - python3-pip
+  - sshpass
+
+runcmd:
+  - rpm --import https://packages.microsoft.com/keys/microsoft.asc
+  - dnf install -y https://packages.microsoft.com/config/rhel/8/packages-microsoft-prod.rpm
+  - dnf install azure-cli -y
+  - sudo alternatives --set python /usr/bin/python3.9
+  - sudo alternatives --set python3 /usr/bin/python3.9
+  - python3 -m pip install ansible
+  - ansible-galaxy collection install azure.azcollection
+  - pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+  - mkdir /opt/vstsagent && cd /opt/vstsagent
+  - wget https://vstsagentpackage.azureedge.net/agent/3.220.0/vsts-agent-linux-x64-3.220.0.tar.gz
+  - tar zxvf vsts-agent-linux-x64-3.220.0.tar.gz
+  - sudo ./bin/installdependencies.sh
+  - chown vstsagent:root /opt/vstsagent -R
+  - su -c '/opt/vstsagent/config.sh --unattended --url https://dev.azure.com/munichre-na --auth pat --token #{azdo_pat_token}# --pool #{azdo_agent_pool}#' - vstsagent
+  - sudo ./svc.sh install
+  - sudo ./svc.sh start
+  

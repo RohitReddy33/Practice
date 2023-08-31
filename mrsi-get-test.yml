@@ -1,0 +1,16 @@
+pool:
+  name: GSI-Ansible
+  demands:
+    - agent.name -equals mrsiqacfgvm
+
+variables:
+- group: gsi-ansible-global
+
+steps:
+- bash: |
+   cd ansible
+   pwd   
+   ansible-playbook -i inventory/MRSI-Test playbooks/jong-mrsi-test.yml \
+                    -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)' -vv
+   
+  displayName: 'Running Playbook'

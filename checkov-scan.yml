@@ -1,0 +1,29 @@
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: "runCheckov"
+    displayName: "Checkov - Scan Bicep files"
+    jobs:
+      - job: "runCheckov"
+        displayName: "Checkov scan for bicep"
+        steps:
+          - bash: |
+              docker pull bridgecrew/checkov
+            workingDirectory: $(System.DefaultWorkingDirectory)
+            displayName: "Pull bridgecrew/checkov image"
+          - bash: |
+              docker run --volume $(pwd):/bicep bridgecrew/checkov --directory /bicep --output junitxml --soft-fail > $(pwd)/CheckovReport.xml
+            workingDirectory: $(System.DefaultWorkingDirectory)
+            displayName: "Run checkov"
+          - task: PublishTestResults@2
+            inputs:
+              testRunTitle: "Checkov Results"
+              failTaskOnFailedTests: true
+              testResultsFormat: "JUnit"
+              testResultsFiles: "CheckovReport.xml"
+              searchFolder: "$(System.DefaultWorkingDirectory)"
+            displayName: "Publish Test results"

@@ -1,0 +1,239 @@
+{
+    "services": {
+        "selections": [
+            {
+                "id": "00000047000000000002",
+                "name": "Data Integration",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000003",
+                "name": "Data Integration - Elastic",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000004",
+                "name": "Application Integration",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000005",
+                "name": "Mass Ingestion-Files",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000006",
+                "name": "Mass Ingestion-Streaming",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000007",
+                "name": "Mass Ingestion-Databases",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000008",
+                "name": "Integration Hub",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000009",
+                "name": "B2B Gateway",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000010",
+                "name": "Data Quality",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000011",
+                "name": "Data Masking",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000012",
+                "name": "API Microgateway",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000015",
+                "name": "Data Governance and Catalog",
+                "enabled": true
+            },
+            {
+                "id": "00000047000000000016",
+                "name": "Industry Solutions",
+                "enabled": true
+            }
+        ]
+    },
+    "connectors": {
+        "selections": [
+            {
+                "id": "010000000000052",
+                "name": "AS2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005M",
+                "name": "Advanced FTP V2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005P",
+                "name": "Advanced FTPS V2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005Q",
+                "name": "Advanced SFTP V2",
+                "enabled": true
+            },
+            {
+                "id": "010000000000008",
+                "name": "Amazon Redshift v2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000000A",
+                "name": "Amazon S3 v2",
+                "enabled": true
+            },
+            {
+                "id": "010000000000066",
+                "name": "Azure DW Database Ingestion",
+                "enabled": true
+            },
+            {
+                "id": "01000000000006E",
+                "name": "Azure EventHub",
+                "enabled": true
+            },
+            {
+                "id": "010000000000059",
+                "name": "B2B EDI Gateway",
+                "enabled": true
+            },
+            {
+                "id": "010000000000051",
+                "name": "B2B EDI Gateway Endpoint",
+                "enabled": true
+            },
+            {
+                "id": "010000000000011",
+                "name": "ComplexFileProcessor",
+                "enabled": true
+            },
+            {
+                "id": "01000000000006B",
+                "name": "Databricks Delta",
+                "enabled": true
+            },
+            {
+                "id": "01000000000001H",
+                "name": "FileIO",
+                "enabled": true
+            },
+            {
+                "id": "01000000000001J",
+                "name": "FileProcessor",
+                "enabled": true
+            },
+            {
+                "id": "010000000000058",
+                "name": "Google Cloud Storage V2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005U",
+                "name": "Hadoop Files V2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000006I",
+                "name": "JDBCV2",
+                "enabled": true
+            },
+            {
+                "id": "010000000000022",
+                "name": "JDBC_IC",
+                "enabled": true
+            },
+            {
+                "id": "01000000000002G",
+                "name": "Microsoft Azure Blob Storage V3",
+                "enabled": true
+            },
+            {
+                "id": "01000000000002J",
+                "name": "Microsoft Azure Data Lake Storage Gen1 V3",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005L",
+                "name": "Microsoft Azure Data Lake Storage Gen2",
+                "enabled": true
+            },
+            {
+                "id": "01000000000002T",
+                "name": "Microsoft Excel",
+                "enabled": true
+            },
+            {
+                "id": "010000000000030",
+                "name": "OData",
+                "enabled": true
+            },
+            {
+                "id": "010000000000085",
+                "name": "OData V2 Protocol Reader",
+                "enabled": true
+            },
+            {
+                "id": "01000000000006U",
+                "name": "OData V2 Protocol Writer",
+                "enabled": true
+            },
+            {
+                "id": "01000000000005F",
+                "name": "Oracle CDC V2",
+                "enabled": true
+            },
+            {
+                "id": "010000000000065",
+                "name": "Oracle Database Ingestion",
+                "enabled": true
+            },
+            {
+                "id": "01000000000003K",
+                "name": "REST V2",
+                "enabled": true
+            },
+            {
+                "id": "010000000000054",
+                "name": "SQL Server CDC",
+                "enabled": true
+            },
+            {
+                "id": "010000000000062",
+                "name": "Snowflake Data Cloud",
+                "enabled": true
+            },
+            {
+                "id": "01000000000004M",
+                "name": "WSConsumer",
+                "enabled": true
+            }
+        ]
+    },
+    "additionalServices": {
+        "selections": [
+            {
+                "id": "00000047000000000013",
+                "name": "Self-hosted Git Repo",
+                "enabled": true
+            }
+        ]
+    }
+}

@@ -1,0 +1,142 @@
+parameters:
+- name: deployBicep
+  displayName: Deploy Infra w Bicep
+  type: boolean
+  default: false
+- name: deployAnsible
+  displayName: Deploy Ansible with above
+  type: boolean
+  default: false
+- name: OrgEnvName
+  displayName: Org-Environment
+  type: string
+  default: AMIG-POC
+  values:
+  - AMIG-POC
+  - AMIG-DEV
+  - MRSI-QA
+- name: Region
+  displayName: Azure Region
+  type: string
+  default: East US
+  values:
+  - East US
+  - West US
+- name: runAnsible
+  displayName: Run Ansible configuration
+  type: boolean
+  default: false
+  
+variables:
+- group: gsi-ansible-global
+- group: iics-${{lower(parameters.OrgEnvName)}}
+- name: agentName
+  value: "${{lower(replace(parameters.OrgEnvName,'-',''))}}cfgvm"
+
+jobs:
+- job: Bicep_on_AzureHosted_Agent
+  pool:
+    name: Azure Pipelines
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+    displayName: 'Replace tokens in config files'
+    inputs:
+      rootDirectory: "project_vars/IICS/${{ parameters.OrgEnvName }}/"
+      targetFiles: |
+        *.yaml
+        *.yml
+        *.json
+  - task: replacetokens@5
+    displayName: 'Replace tokens in Ansible cloud init file'
+    enabled: ${{ and(parameters.deployBicep, parameters.deployAnsible) }}
+    inputs:
+      targetFiles: 'cloud_init/rhel_azdo_poolagent.yml'
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Deploy IICS via Bicep
+    enabled: ${{ parameters.deployBicep }}
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: ser-IICS-${{ parameters.OrgEnvName }}
+      resourceGroupName: '$(resource_group)'
+      location: '${{ parameters.Region }}'
+      addSpnToEnvironment: true
+      templateLocation: 'Linked artifact'
+      csmFile: 'bicep/iics/main.bicep'
+      csmParametersFile: 'project_vars/IICS/${{ parameters.OrgEnvName }}/iics-bicep.params.json'
+      overrideParameters: >-
+        -ansible_deployYesNo ${{ convertToJson(parameters.deployAnsible) }}
+        -spn_clientId $servicePrincipalId
+        -spn_clientSecret $servicePrincipalKey
+        -spn_tenantId munichre.onmicrosoft.com
+      deploymentMode: 'Incremental'
+
+- job: Six_Minute_Wait_Before_Ansible
+  steps:      
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ser-IICS-${{ parameters.OrgEnvName }}
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        resource_group='$(resource_group)'
+        vms=$(az vm list --resource-group $resource_group --query "[?contains(name, 'cfg')].{Name:name, ResourceGroup:resourceGroup}" -o tsv)
+        vm_name=$(echo "$vms[0]" | cut -f1)
+        deployment_time=$(az vm show -g $resource_group -n $vm_name | jq .timeCreated)
+        now_time=$(date "+%s")
+        echo "now time is  : $now_time"
+        
+        dep_epoch=$(date -d "$(echo $deployment_time | tr -d '"')" "+%s")
+        new_dep_time=$((dep_epoch + 360))
+        echo "deployment time is  : $new_dep_time"
+
+        while [ $new_dep_time -gt $now_time ]; do 
+            echo "Waiting on VM"
+            sleep 10
+            now_time=$(date "+%s")
+        done
+        echo "VM is Ready!"
+
+- job: Ansible_on_SelfHosted_Agent
+  dependsOn: Six_Minute_Wait_Before_Ansible
+  workspace:
+    clean: all
+  pool:
+    name: GSI-Ansible
+    demands:
+      - "agent.name -equals ${{ variables.agentName }}"
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+    displayName: 'Replace tokens in config files'
+    inputs:
+      rootDirectory: "project_vars/IICS/${{ parameters.OrgEnvName }}/"
+      targetFiles: |
+        *.yaml
+        *.yml
+        *.json
+  - task: AzureCLI@2
+    displayName: Configure IICS VMs via Ansible & Azure CLI
+    enabled: ${{ parameters.runAnsible }}
+    inputs:
+      addSpnToEnvironment: true
+      azureSubscription: ser-IICS-${{ parameters.OrgEnvName }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        varsdir="../project_vars/IICS/${{ parameters.OrgEnvName }}/"
+        cd ansible
+        echo "ANSIBLE INVENTORY"
+        ansible-inventory -i $varsdir/ansible-inv.azure_rm.yaml --graph
+        echo "ANSIBLE LINUX PING"
+        ansible linux -i $varsdir/ansible-inv.azure_rm.yaml \
+                    -m ping  \
+                    -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)'
+        echo "ANSIBLE WINDOWS PING"
+        ansible windows -i $varsdir/ansible-inv.azure_rm.yaml \
+                    -m win_ping  \
+                    -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)'
+        ansible-playbook -i $varsdir/ansible-inv.azure_rm.yaml \
+                      playbooks/nirmal-book.yml \
+                      -e '@../project_vars/IICS/${{ parameters.OrgEnvName }}/ansible-vars.yml' \
+                      -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)' \
+                      -e 'artifactDirectory=$(Build.SourcesDirectory)'
+

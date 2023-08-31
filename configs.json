@@ -1,0 +1,868 @@
+{
+    "process-engine": [
+        {
+            "jvm": [
+                {
+                    "name": "min-heap",
+                    "value": "'512M'"
+                },
+                {
+                    "name": "max-heap",
+                    "value": "'1536M'"
+                },
+                {
+                    "name": "additional-properties",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "server": [
+                {
+                    "name": "host-name",
+                    "value": "'localhost'"
+                },
+                {
+                    "name": "shutdown-port",
+                    "value": "7005"
+                },
+                {
+                    "name": "key-alias",
+                    "value": "'localhost'"
+                },
+                {
+                    "name": "key-store",
+                    "value": "'../conf/ae.keystore'"
+                },
+                {
+                    "name": "key-store-password",
+                    "value": "'password'"
+                },
+                {
+                    "name": "trust-store",
+                    "value": "'../conf/ae.cacerts'"
+                },
+                {
+                    "name": "trust-store-password",
+                    "value": "'changeit'"
+                },
+                {
+                    "name": "ldap-enabled-realm",
+                    "value": "false"
+                },
+                {
+                    "name": "ldap-properties",
+                    "value": "- key: connectionURL\n  value: ldap://${host.name}:10389\n- key: connectionName\n  value: uid=admin,ou=system\n- key: connectionPassword\n  value: ${pe.ldap.password}\n- key: authentication\n  value: simple\n- key: userBase\n  value: ou=people,DC=${host.name},DC=informatica,DC=com\n- key: userSearch\n  value: (uid={0})\n- key: roleBase\n  value: ou=groups,DC=${host.name},DC=informatica,DC=com\n- key: roleName\n  value: cn\n- key: roleSearch\n  value: (uniqueMember={0})\n"
+                },
+                {
+                    "name": "ssl-enabled-protocols",
+                    "value": "'TLSv1.2'"
+                },
+                {
+                    "name": "ephemeral-DH-key-size",
+                    "value": "2048"
+                },
+                {
+                    "name": "use-secure-ciphers-only",
+                    "value": "true"
+                },
+                {
+                    "name": "fips-enabled",
+                    "value": "false"
+                }
+            ]
+        },
+        {
+            "cluster": [
+                {
+                    "name": "enabled",
+                    "value": "false"
+                },
+                {
+                    "name": "name",
+                    "value": "'ProcessEngine'"
+                },
+                {
+                    "name": "primary-node",
+                    "value": "true"
+                },
+                {
+                    "name": "load-balance-url",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "connectors": [
+                {
+                    "name": "http-port",
+                    "value": "7080"
+                },
+                {
+                    "name": "http-maxThreads",
+                    "value": "600"
+                },
+                {
+                    "name": "http-connectionTimeout",
+                    "value": "120000"
+                },
+                {
+                    "name": "https-port",
+                    "value": "7443"
+                },
+                {
+                    "name": "https-maxThreads",
+                    "value": "600"
+                },
+                {
+                    "name": "https-connectionTimeout",
+                    "value": "120000"
+                },
+                {
+                    "name": "secure-channel-maxThreads",
+                    "value": "600"
+                },
+                {
+                    "name": "secure-channel-connectionTimeout",
+                    "value": "120000"
+                }
+            ]
+        },
+        {
+            "logging": [
+                {
+                    "name": "1catalina_org_apache_juli_FileHandler_level",
+                    "value": "'FINE'"
+                },
+                {
+                    "name": "2localhost_org_apache_juli_FileHandler_level",
+                    "value": "'FINE'"
+                },
+                {
+                    "name": "3manager_org_apache_juli_FileHandler_level",
+                    "value": "'FINE'"
+                },
+                {
+                    "name": "4host_manager_org_apache_juli_FileHandler_level",
+                    "value": "'FINE'"
+                },
+                {
+                    "name": "java_util_logging_ConsoleHandler_level",
+                    "value": "'FINE'"
+                },
+                {
+                    "name": "org_apache_catalina_core_ContainerBase_Catalina_localhost_level",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "org_apache_catalina_core_ContainerBase_Catalina_localhost_manager_level",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "org_apache_catalina_core_ContainerBase_Catalina_localhost_host-manager_level",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "log4j2_root_level",
+                    "value": "'INFO'"
+                }
+            ]
+        },
+        {
+            "db": [
+                {
+                    "name": "type",
+                    "value": "'postgre'"
+                },
+                {
+                    "name": "driver",
+                    "value": "'org.postgresql.Driver'"
+                },
+                {
+                    "name": "url",
+                    "value": "'jdbc:postgresql://localhost:5432/activevos'"
+                },
+                {
+                    "name": "maxActive",
+                    "value": "300"
+                },
+                {
+                    "name": "maxIdle",
+                    "value": "30"
+                },
+                {
+                    "name": "maxWait",
+                    "value": "30000"
+                },
+                {
+                    "name": "connection-properties",
+                    "value": "- key: timeBetweenEvictionRunsMillis\n  value: 300000\n- key: testOnBorrow\n  value: true\n- key: testWhileIdle\n  value: true\n"
+                }
+            ]
+        }
+    ],
+    "Common_Integration_Components": [
+        {
+            "PLATFORM_CFG": [
+                {
+                    "name": "LCM_JRE_OPTS",
+                    "value": "'-Xms1024m -Xmx2056m'"
+                }
+            ]
+        },
+        {
+            "TOMCAT_CFG": [
+                {
+                    "name": "NetworkTimeoutPeriod",
+                    "value": "300"
+                },
+                {
+                    "name": "JRE_OPTS",
+                    "value": "'-Xms1024m -Xmx2056m'"
+                }
+            ]
+        },
+        {
+            "SYSTEM_CFG": [
+                {
+                    "name": "HTTP_CONNECTION_TIMEOUT_SECONDS",
+                    "value": "60"
+                },
+                {
+                    "name": "HTTP_SOCKET_TIMEOUT_SECONDS",
+                    "value": "60"
+                }
+            ]
+        },
+        {
+            "COMMAND_CFG": [
+                {
+                    "name": "MaximumConcurrentJobs",
+                    "value": "10"
+                }
+            ]
+        }
+    ],
+    "Data_Integration_Server": [
+        {
+            "PLATFORM_CFG": [
+                {
+                    "name": "ICSCheckPeriod",
+                    "value": "120"
+                },
+                {
+                    "name": "INFA_DEBUG",
+                    "value": ""
+                },
+                {
+                    "name": "log4j_logger_com_informatica_saas_di_app_script",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "LCM_SCRIPT_MEMORY",
+                    "value": "'-Xrs -Xms8m -Xmx256m'"
+                }
+            ]
+        },
+        {
+            "TOMCAT_CFG": [
+                {
+                    "name": "NetworkTimeoutPeriod",
+                    "value": "300"
+                },
+                {
+                    "name": "NetworkRetryInterval",
+                    "value": "5"
+                },
+                {
+                    "name": "MySQL_JDBC_DRIVER_JARNAME",
+                    "value": "'mysql-connector-java-8.0.12.jar'"
+                },
+                {
+                    "name": "EnableParallelRunFilePurge",
+                    "value": "'true'"
+                },
+                {
+                    "name": "Tomcat_Server_SSL_Enabled_Protocols",
+                    "value": "''"
+                },
+                {
+                    "name": "INFA_DTM_STAGING_ENABLED_CONNECTORS",
+                    "value": "''"
+                },
+                {
+                    "name": "INFA_DTM_RDR_STAGING_ENABLED_CONNECTORS",
+                    "value": "''"
+                },
+                {
+                    "name": "INFA_DTM_LKP_STAGING_ENABLED_CONNECTORS",
+                    "value": "''"
+                },
+                {
+                    "name": "maxDTMProcesses",
+                    "value": "6",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "oracle.utf8.charset.check",
+                    "value": "true",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "csv-reader-disable-safety-switch",
+                    "value": "true",
+                    "isCustom": "true"
+                }
+            ]
+        },
+        {
+            "CDQAV": [
+                {
+                    "name": "LicenseFileDirectoryPath",
+                    "value": "'$PMRootDir/avLicenseFile'"
+                },
+                {
+                    "name": "RefereceDataDirectoryPath",
+                    "value": "'$PMRootDir/avdata'"
+                },
+                {
+                    "name": "FullPreLoadCountries",
+                    "value": ""
+                },
+                {
+                    "name": "PartialPreLoadCountries",
+                    "value": ""
+                },
+                {
+                    "name": "NoPreLoadCountries",
+                    "value": "'ALL'"
+                },
+                {
+                    "name": "MaximumMemoryinMegabytes",
+                    "value": "1048"
+                },
+                {
+                    "name": "MaximumNumberofResults",
+                    "value": "100"
+                },
+                {
+                    "name": "DownloadCASSData",
+                    "value": "'No'"
+                },
+                {
+                    "name": "CertifiedReportLocation",
+                    "value": "'$PMRootDir/avreports'"
+                },
+                {
+                    "name": "ParrallelExecutionInstances",
+                    "value": "5"
+                }
+            ]
+        },
+        {
+            "ADAPTER_SDK_CONF": [
+                {
+                    "name": "NON_OSGI_ENABLED",
+                    "value": "'true'"
+                }
+            ]
+        },
+        {
+            "IDQ": [
+                {
+                    "name": "IdentityReferenceDataLocation",
+                    "value": "'../../../../DQ/Populations'"
+                },
+                {
+                    "name": "IdentityReferenceIndexLocation",
+                    "value": "'$PMRootDir/dq/dedupeIndexFiles'"
+                },
+                {
+                    "name": "IdentityCacheLocation",
+                    "value": "'$PMRootDir/dq/dedupeCacheFiles'"
+                },
+                {
+                    "name": "ReferenceDataLocation",
+                    "value": "'../../rdtmDir/DQContent'"
+                }
+            ]
+        },
+        {
+            "TOMCAT_JRE": [
+                {
+                    "name": "INFA_SSL",
+                    "value": ""
+                },
+                {
+                    "name": "INFA_MEMORY",
+                    "value": "'-Xms2048m -Xmx4096m -XX:MaxPermSize=3072m'"
+                },
+                {
+                    "name": "JRE_OPTS",
+                    "value": ""
+                },
+                {
+                    "name": "JAVA_LIBS",
+                    "value": ""
+                }
+            ]
+        },
+        {
+            "TOMCAT_LOG4J": [
+                {
+                    "name": "log4j_rootLogger",
+                    "value": "'INFO, tomcatLog'"
+                },
+                {
+                    "name": "log4j_rootLoggerLevel",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "log4j_appender_tomcatLog",
+                    "value": "'org.apache.log4j.FileAppender'"
+                },
+                {
+                    "name": "log4j_appender_tomcatLog_layout",
+                    "value": "'org.apache.log4j.PatternLayout'"
+                },
+                {
+                    "name": "log4j_appender_tomcatLog_layout_ConversionPattern",
+                    "value": "'%d %d{z} %p [%c] - %encode{%m}{CRLF}%n'"
+                },
+                {
+                    "name": "log4j_logger_org_apache",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_net_sf",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_org_hibernate",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_org_springframework",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_com_informatica_saas",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "log4j_logger_com_informatica_saas_tunnel_TunnelClientImpl",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "log4j_logger_com_informatica_saas_tunnel_TunnelClientHttpCommonsImpl",
+                    "value": "'INFO'"
+                },
+                {
+                    "name": "log4j_logger_org_apache_commons_httpclient_auth_AuthChallengeProcessor",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_org_apache_commons_httpclient",
+                    "value": "'WARN'"
+                },
+                {
+                    "name": "log4j_logger_httpclient_wire",
+                    "value": "'INFO'"
+                }
+            ]
+        },
+        {
+            "SYSTEM_CFG": [
+                {
+                    "name": "TunnelTimeoutPeriod",
+                    "value": "300"
+                },
+                {
+                    "name": "CompatibleReleaseLabel",
+                    "value": "4100"
+                }
+            ]
+        },
+        {
+            "PMRDTM_CFG": [
+                {
+                    "name": "JVMClassPath",
+                    "value": "'pmserversdk.jar'"
+                },
+                {
+                    "name": "JVMOption1",
+                    "value": "'-Xmx8192m'"
+                },
+                {
+                    "name": "JVMOption2",
+                    "value": "-DISD_MAX_RECORD_SIZE=10000000"
+                },
+                {
+                    "name": "JVMOption3",
+                    "value": "-XX:MaxPermSize=2048m"
+                },
+                {
+                    "name": "JVMOption4",
+                    "value": "-DISD_MAX_RECORD_SIZE=10000000"
+                },
+                {
+                    "name": "JVMOption5",
+                    "value": ""
+                },
+                {
+                    "name": "UseLogService",
+                    "value": "'No'"
+                },
+                {
+                    "name": "ServerName",
+                    "value": "'rDTM'"
+                },
+                {
+                    "name": "PMUser",
+                    "value": "'rDTMUser'"
+                },
+                {
+                    "name": "PMUserNamespace",
+                    "value": "'rDTMUserNamespace'"
+                },
+                {
+                    "name": "PMPassword",
+                    "value": "'rDTMPass'"
+                },
+                {
+                    "name": "RepositoryName",
+                    "value": "'XMLRepository'"
+                },
+                {
+                    "name": "RepositoryDomain",
+                    "value": "'rDTMDomain'"
+                },
+                {
+                    "name": "OptimizeODBCRead",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "OptimizeODBCWrite",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "DataMovementMode",
+                    "value": "'UNICODE'"
+                },
+                {
+                    "name": "RecordSessStatInRepo",
+                    "value": "'No'"
+                },
+                {
+                    "name": "ValidateDataCodePages",
+                    "value": "'No'"
+                },
+                {
+                    "name": "__PMOV_FFW_ESCAPE_QUOTE",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "AgentConnectionTimeout",
+                    "value": "5"
+                },
+                {
+                    "name": "LogsInUTF8",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "SalesForceConnectionTimeout",
+                    "value": "300"
+                },
+                {
+                    "name": "OdbcDataDirectNonWapi",
+                    "value": "0"
+                },
+                {
+                    "name": "OptimizeOracleSQLServerWrite",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "OdbcDataDirectWapiWithSQLWChar",
+                    "value": "0"
+                },
+                {
+                    "name": "$PMLookupFileDir",
+                    "value": "/mnt/mrsishare/infa_shared/LkpFiles"
+                },
+                {
+                    "name": "$PMSessionLogDir",
+                    "value": "/mnt/mrsishare/infa_shared/SessLogs"
+                },
+                {
+                    "name": "$PMBadFileDir",
+                    "value": "/mnt/mrsishare/infa_shared/BadFiles"
+                },
+                {
+                    "name": "$PMCacheDir",
+                    "value": "/mnt/mrsishare/infa_shared/Cache"
+                },
+                {
+                    "name": "$PMStorageDir",
+                    "value": "/mnt/mrsishare/infa_shared/StorageDir"
+                },
+                {
+                    "name": "$PMTargetFileDir",
+                    "value": "/mnt/mrsishare/infa_shared/TgtFiles"
+                },
+                {
+                    "name": "$PMSourceFileDir",
+                    "value": "/mnt/mrsishare/infa_shared/SrcFiles"
+                },
+                {
+                    "name": "$PMExtProcDir",
+                    "value": "/mnt/mrsishare/infa_shared/ExtProcDir"
+                },
+                {
+                    "name": "$PMTempDir",
+                    "value": "/mnt/mrsishare/infa_shared/Temp"
+                },
+                {
+                    "name": "$PMWorkflowLogDir",
+                    "value": "/mnt/mrsishare/infa_shared/WorkflowLogs"
+                },
+                {
+                    "name": "ExitOnAgentError",
+                    "value": "'No'"
+                },
+                {
+                    "name": "SfdcProxyFile",
+                    "value": "'../../proxy.ini'"
+                },
+                {
+                    "name": "CommitOnlyAtEnd",
+                    "value": "'true'"
+                },
+                {
+                    "name": "OptimizeAuroraRead",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "OptimizeAuroraWrite",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "MySQL_ODBC_DRIVER",
+                    "value": "'MySQL ODBC 8.0 Unicode Driver'"
+                },
+                {
+                    "name": "OptimizeMySQLRead",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "OptimizeMySQLWrite",
+                    "value": "'No'"
+                },
+                {
+                    "name": "EnableCustomFlagsForSqlTx",
+                    "value": "0"
+                },
+                {
+                    "name": "RemoveOutputHeaderHash",
+                    "value": "'Yes'"
+                },
+                {
+                    "name": "OptimizeOracleSQLServerRead",
+                    "value": "'Yes'",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "ODBCTraceFile",
+                    "value": "/otp/informatica/odbctrace.trc",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "ODBCTrace",
+                    "value": "0",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "UseCustomSessionConfig",
+                    "value": "'Yes'",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "EnableArrayUpdate",
+                    "value": "'Yes'",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "EnableArrayUpsert",
+                    "value": "'Yes'",
+                    "isCustom": "true"
+                },
+                {
+                    "name": "SqlServerAdditionalConnectionProperties",
+                    "value": "LoginTimeout=300;ConnectionRetryCount=10;ConnectionRetryDelay=10",
+                    "isCustom": "true"
+                }
+            ]
+        },
+        {
+            "IDQAD": [
+                {
+                    "name": "ReferenceDataLocation",
+                    "value": "'/mnt/mrsishare/infa_shared/Address_Verification'"
+                },
+                {
+                    "name": "LicenseKey",
+                    "value": "'6YAU1W047P1Z1VQQKCT6PLPRVJP2TU7NUMAC'"
+                },
+                {
+                    "name": "FullPreLoadCountries",
+                    "value": ""
+                },
+                {
+                    "name": "PartialPreLoadCountries",
+                    "value": ""
+                },
+                {
+                    "name": "NoPreLoadCountries",
+                    "value": "'ALL'"
+                },
+                {
+                    "name": "FullPreLoadGeoCodingCountries",
+                    "value": ""
+                },
+                {
+                    "name": "PartialPreLoadGeoCodingCountries",
+                    "value": ""
+                },
+                {
+                    "name": "NoPreLoadGeoCodingCountries",
+                    "value": "'ALL'"
+                },
+                {
+                    "name": "MemoryUsage",
+                    "value": "1048"
+                },
+                {
+                    "name": "CacheSize",
+                    "value": "'LARGE'"
+                },
+                {
+                    "name": "PreloadingMethod",
+                    "value": "'MAP'"
+                },
+                {
+                    "name": "FullPreLoadAddressCodeCountries",
+                    "value": ""
+                },
+                {
+                    "name": "PartialPreLoadAddressCodeCountries",
+                    "value": ""
+                },
+                {
+                    "name": "NoPreLoadAddressCodeCountries",
+                    "value": ""
+                },
+                {
+                    "name": "ReportLocation",
+                    "value": "'.'"
+                },
+                {
+                    "name": "MaxResultCount",
+                    "value": "100"
+                },
+                {
+                    "name": "MaxAddressObjectCount",
+                    "value": "5"
+                },
+                {
+                    "name": "DownloadCASSdata_SALocatedinUSA",
+                    "value": "'No'"
+                },
+                {
+                    "name": "CertifiedReportLocation",
+                    "value": "'$PMRootDir/avreports'"
+                }
+            ]
+        }
+    ],
+    "MassIngestionRuntime": [
+        {
+            "JVM_SETTINGS": [
+                {
+                    "name": "app-heap-size",
+                    "value": "'-Xms256m -Xmx2048m'"
+                },
+                {
+                    "name": "lcm-heap-size",
+                    "value": "'-Xms32m -Xmx128m'"
+                },
+                {
+                    "name": "jvm-parameter",
+                    "value": "''"
+                }
+            ]
+        },
+        {
+            "AGENT_RUNTIME_SETTINGS": [
+                {
+                    "name": "file-listener-snapshot-dir",
+                    "value": "/mnt/mrsishare/FI/snapshot"
+                },
+                {
+                    "name": "mi-task-workspace-dir",
+                    "value": "'userdata/workspace'"
+                },
+                {
+                    "name": "mi-task-quarantine-dir",
+                    "value": "'../data/quarantine'"
+                },
+                {
+                    "name": "mi-dedup-snapshot-dir",
+                    "value": "'../data/dedup'"
+                },
+                {
+                    "name": "file-listener-max-pool-size",
+                    "value": "20"
+                },
+                {
+                    "name": "file-listener-core-pool-size",
+                    "value": "20"
+                },
+                {
+                    "name": "fmi-task-max-pool-size",
+                    "value": "50"
+                },
+                {
+                    "name": "fmi-task-core-pool-size",
+                    "value": "20"
+                },
+                {
+                    "name": "ftp-receive-socket-buffer-size",
+                    "value": "16"
+                },
+                {
+                    "name": "ftp-send-socket-buffer-size",
+                    "value": "16"
+                },
+                {
+                    "name": "http-client-timeout",
+                    "value": "300"
+                },
+                {
+                    "name": "agent-dedup-repository",
+                    "value": "'false'"
+                }
+            ]
+        },
+        {
+            "PGP_SETTINGS": [
+                {
+                    "name": "public-keyring-path",
+                    "value": "'../data/pubring.pkr'"
+                },
+                {
+                    "name": "secret-keying-path",
+                    "value": "'../data/secring.skr'"
+                }
+            ]
+        }
+    ]
+}

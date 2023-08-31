@@ -1,0 +1,58 @@
+parameters:
+- name: vmAction
+  displayName: Start/stop IICS VMs off-hours
+  type: string
+  default: Start
+  values:
+  - Start
+  - Stop
+- name: OrgEnvName
+  displayName: Org-Environment
+  type: string
+  default: AMIG-POC
+  values:
+  - AMIG-POC
+  - AMIG-DEV
+  - MRSI-QA
+  
+variables:
+- group: gsi-ansible-global
+- group: iics-${{lower(parameters.OrgEnvName)}}
+- name: agentName
+  value: "${{lower(replace(parameters.OrgEnvName,'-',''))}}cfgvm"
+
+jobs:
+- job: Run_on_Agent
+  workspace:
+    clean: all
+  pool:
+    name: GSI-Ansible
+    demands:
+      - "agent.name -equals ${{ variables.agentName }}"
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+    displayName: 'Replace tokens in config files'
+    inputs:
+      rootDirectory: "project_vars/IICS/${{ parameters.OrgEnvName }}/"
+      targetFiles: |
+        *.yaml
+        *.yml
+        *.json
+  - task: AzureCLI@2
+    displayName: Configure IICS VMs via Ansible & Azure CLI
+    inputs:
+      azureSubscription: ser-IICS-${{ parameters.OrgEnvName }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        varsdir="../project_vars/IICS/${{ parameters.OrgEnvName }}/"
+        cd ansible
+        echo "ANSIBLE INVENTORY"
+        ansible-inventory -i $varsdir/ansible-inv.azure_rm.yaml --graph
+        ansible-playbook -i $varsdir/ansible-inv.azure_rm.yaml \
+                      playbooks/startstop-iics-vms.yml \
+                      -e '@../project_vars/IICS/${{ parameters.OrgEnvName }}/ansible-vars.yml' \
+                      -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)' \
+                      -e 'vmAction=${{ parameters.vmAction }}' \
+                      -e 'resource_group=$(resource_group)'
+

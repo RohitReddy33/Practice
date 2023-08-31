@@ -1,0 +1,39 @@
+parameters:
+- name: OrgName
+  displayName: Organization
+  type: string
+  default: MRSI
+  values:
+  - AMIG
+  - MRSI
+- name: EnvName
+  displayName: Environment
+  type: string
+  default: DEV
+  values:
+  - DEV
+  - QA
+  
+variables:
+- group: gsi-ansible-global
+
+jobs:
+- job: Run_on_Agent
+  pool:
+    name: GSI-Ansible
+    demands:
+      - "agent.name -equals ${{lower(parameters.OrgName)}}${{lower(parameters.EnvName)}}cfgvm"
+  steps:
+  - task: AzureCLI@2
+    displayName: 'Running Ping Test'
+    inputs:
+      azureSubscription: ser-IICS-${{ parameters.OrgName }}-${{ parameters.EnvName }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        varsdir="../project_vars/IICS/${{ parameters.OrgName }}-${{ parameters.EnvName }}/"
+        cd ansible
+        ansible-inventory -i $varsdir/ansible-inv.azure_rm.yaml --list
+        ansible all -i $varsdir/ansible-inv.azure_rm.yaml \
+                    -m ping  \
+                    -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)'

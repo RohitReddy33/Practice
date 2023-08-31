@@ -1,0 +1,16 @@
+mount_path: /mnt/iicsshare
+azdo_url: "#{ proj_azdo_url }#"
+azdo_pat_token: "#{ proj_azdo_pat_token }#"
+azdo_agent_pool: "#{ proj_azdo_agent_pool }#"
+iics_username: "#{ proj_iics_username }#"
+iics_password: "#{ proj_iics_password }#"
+iics_agent_group_name: "#{ proj_iics_agent_group_name }#"
+
+iics_volumes:
+  - mount: "/opt/informatica"
+    disknum: 1
+  - mount: "/opt/iics_temp"
+    disknum: 2
+network_tests:
+  - { address: sql-iics-am-poc-rn5aj-trs.database.windows.net, port: 1432 }
+  - { address: microsoft.com, port: 443 }

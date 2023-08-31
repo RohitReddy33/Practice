@@ -1,73 +1,34 @@
----
+parameters:
+- name: OrgName
+  displayName: Organization
+  type: string
+  default: MRSI
+  values:
+  - AMIG
+  - MRSI
+- name: EnvName
+  displayName: Environment
+  type: string
+  default: DEV
+  values:
+  - DEV
+  - QA
 
-# - name: Get Azure storage account access key
-#   hosts: localhost
-#   roles:
-#     - role: lin-iics-agentgroup
-#       become: yes
-#       iics_username: "{{ iics_username }}"
-#       iics_password: "{{ iics_password }}"
-#       iics_agent_group_name: "{{ iics_agent_group_name }}"
-#   tasks:
-#   - name: Get storage account details for fileshare
-#     azure_rm_storageaccount_info:
-#       resource_group: "{{ resource_group }}"
-#       name: "{{ stg_acct_name }}"
-#       show_connection_string: true
-#     register: result
+pool:
+  name: GSI-Ansible
+  demands:
+    - agent.name -equals amigdevcfgvm
 
-# - name: Configure any Windows disks
-#   hosts: windows
-#   roles:
-#     - role: win-drives-config
+variables:
+- group: gsi-ansible-global
 
-# - name: Mount all IICS Linux volumes
-#   hosts: iics_hosts:dbx_hosts:!windows
-#   roles:
-#     - role: lin-drive-mount
-#       become: yes
-#       volumes: "{{ iics_volumes }}"
-
-- name: Install Nessus 
-  hosts: all
-  roles:
-    - role: install-nessus
-
-# - name: AD Join
-#   hosts: all
-#   roles:
-#     - role: ad-join
-
-# - name: AD Leave
-#   hosts: all
-#   roles:
-#     - role: ad-unjoin
-
-# - name: Configure IICS secure agents
-#   hosts: iics_hosts:dbx_hosts
-#   roles:
-#     - role: mount-azurefiles
-#       stg_account_name: "{{ stg_acct_name }}"
-#       stg_account_key: "{{ hostvars.localhost.result.storageaccounts[0].primary_endpoints.key }}"
-#       stg_fileshare_name: "{{ stg_acct_fileshare_name }}"
-#       mount_point: "{{ mount_path }}"
-#       win_mount_letter: "z"
-#     - role: register-iics-agent
-# #      iics_username: "{{ iics_username }}"
-# #      iics_password: "{{ iics_password }}"
-# #      iics_agent_group_name: "{{ iics_agent_group_name }}"
-#     - role: net-connectivity-test
-#       tests: "{{ network_tests }}"
-
-# - name: Configure AZDO agents
-#   hosts: azdo_hosts
-#   roles:
-#     - role: azdo-poolagent
-#       azdo_url: "{{ azdo_url }}"
-#       azdo_pat_token: "{{ azdo_pat_token }}"
-#       azdo_agent_pool: "{{ azdo_agent_pool }}"
-
-# - name: Configure Databricks connectors
-#   hosts: dbx_hosts:!windows
-#   roles:
-#     - role: lin-install-datadriver
+steps:
+- bash: |
+   cd ansible
+   pwd   
+   cp  "../project_vars/IICS/${{ parameters.OrgName }}-${{ parameters.EnvName }}/configs.json" "playbooks/roles/lin-iics-agentgroup/files" 
+   ansible-playbook  -i inventory/${{ parameters.OrgName }}-${{ parameters.EnvName }} \
+   playbooks/jong-test.yml \
+   -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)'  -v
+   
+  displayName: 'Running Playbook'

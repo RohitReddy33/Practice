@@ -1,0 +1,48 @@
+parameters:
+- name: OrgName
+  displayName: Organization
+  type: string
+  default: MRSI
+  values:
+  - AMIG
+  - MRSI
+- name: EnvName
+  displayName: Environment
+  type: string
+  default: DEV
+  values:
+  - DEV
+  - QA
+  
+variables:
+- group: gsi-ansible-global
+
+jobs:
+- job: Run_on_Agent
+  pool:
+    name: GSI-Ansible
+    demands:
+    - agent.name -equals mrsiqacfgvm
+   
+    
+  steps:
+  - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+    displayName: 'Replace tokens in environment YAML vars file'
+    inputs:
+      rootDirectory: "ansible"
+      targetFiles: "vars/${{ parameters.OrgName }}-${{ parameters.EnvName }}.yml"
+  - task: AzureCLI@2
+    displayName: Azure CLI
+    inputs:
+      azureSubscription: ser-IICS-${{ parameters.OrgName }}-${{ parameters.EnvName }}
+      scriptType: bash
+      scriptLocation: inlineScript
+      inlineScript: |
+        cd ansible
+        pwd   
+        ansible-playbook -i inventory/${{ parameters.OrgName }}-${{ parameters.EnvName }} \
+                      playbooks/install_databricks.yml \
+                     -e 'ansible_user=$(vm_username) ansible_password=$(vm_password)' \
+                     -v
+                    
+                  

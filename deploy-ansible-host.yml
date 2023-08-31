@@ -1,0 +1,51 @@
+parameters:
+  - name: variableGroupName
+    type: string
+  - name: agentPoolName
+    type: string
+  - name: azureSubscriptionConnectionName
+    type: string
+  - name: environment
+    type: string
+  - name: project
+    type: string
+  - name: location
+    type: string
+
+stages:
+  - stage: ${{ parameters.environment }}
+    displayName: 'Create VM in agent pool for ${{ parameters.environment }}'
+    condition: succeeded()
+    variables:
+      - group: ${{ parameters.variableGroupName }}
+      - name: agentPoolName
+        value: ${{ parameters.agentPoolName }}
+    jobs:
+    - job: CreateVMinAgentpool
+      displayName: Create VM in agent pool
+      timeoutInMinutes: 4320 # job times out in 3 days
+      steps:
+        - task: replacetokens@5
+          displayName: 'Replace tokens in Ansible cloud init file'
+          inputs:
+            targetFiles: 'cloud_init/rhel_azdo_poolagent.yml'
+        - task: qetza.replacetokens.replacetokens-task.replacetokens@5
+          displayName: 'Replace tokens in config files'
+          inputs:
+            rootDirectory: "project_vars/IICS/${{ parameters.OrgName }}-${{ parameters.EnvName }}/"
+            targetFiles: |
+              *.yaml
+              *.yml
+              *.json
+        - task: AzureResourceManagerTemplateDeployment@3
+          inputs:
+            deploymentScope: 'Resource Group'
+            azureResourceManagerConnection: '${{ parameters.azureSubscriptionConnectionName }}'
+            action: 'Create Or Update Resource Group'
+            resourceGroupName: 'RG-${{ parameters.project }}-${{ parameters.environment }}-ANSIBLE'
+            location: '${{ parameters.location }}'
+            templateLocation: 'Linked artifact'
+            csmFile: 'bicep/vm_ansible/main.bicep'
+            csmParametersFile: 'project_vars/IICS/${{ parameters.project }}-${{ parameters.environment }}/vm-ansible-bicep.json'
+            deploymentMode: 'Incremental'
+            deploymentName: 'DeployPipelineTemplate'

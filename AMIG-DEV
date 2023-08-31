@@ -1,0 +1,7 @@
+[iics]
+10.253.131.45
+[dbx]
+10.253.131.45
+
+[all:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'

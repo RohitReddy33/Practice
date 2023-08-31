@@ -1,0 +1,7 @@
+[linux]
+10.253.37.27
+
+[windows]
+
+[linux:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'

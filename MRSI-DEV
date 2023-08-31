@@ -1,0 +1,8 @@
+[azdo]
+10.253.36.134
+[iics]
+10.253.36.21
+10.253.36.28
+
+[all:vars]
+ansible_ssh_common_args='-o StrictHostKeyChecking=no'
